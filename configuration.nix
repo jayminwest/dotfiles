@@ -27,6 +27,9 @@
   nix-homebrew = {
     enable = true;
     inherit user;
+    # Adopt the pre-existing /opt/homebrew installation instead of failing;
+    # keeps installed packages, replaces Homebrew's own core with the managed one.
+    autoMigrate = true;
   };
 
   homebrew = {
