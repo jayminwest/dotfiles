@@ -59,6 +59,7 @@
       "xcodegen"
       "periphery"
       # misc
+      "herdr"
       "rust"
       "watch"
     ];
