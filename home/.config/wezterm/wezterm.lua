@@ -24,6 +24,8 @@ wezterm.on("cycle-scheme", function(window, pane)
 end)
 config.keys = {
   { key = "Y", mods = "CTRL|SHIFT", action = wezterm.action.EmitEvent("cycle-scheme") },
+  { key = "H", mods = "CTRL|SHIFT", action = wezterm.action.SplitPane({ direction = "Left" }) },
+  { key = "L", mods = "CTRL|SHIFT", action = wezterm.action.SplitPane({ direction = "Right" }) },
 }
 
 return config
