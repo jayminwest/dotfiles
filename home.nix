@@ -21,8 +21,10 @@ in
     gh
     just
     gnupg
+    pi-coding-agent
     # languages
     go
+    nodejs
     # infra
     flyctl
     kubectl
