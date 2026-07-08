@@ -37,7 +37,6 @@ in
 
   home.sessionVariables = {
     EDITOR = "nvim";
-    KOTA_MIND_URL = "https://jaymins-mac-pro.tail1b7f44.ts.net:8500";
     BUN_INSTALL = "${config.home.homeDirectory}/.bun";
   };
 
