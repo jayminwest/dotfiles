@@ -16,6 +16,7 @@ in
     fd
     fzf
     jq
+    yazi
     lazygit
     neovim
     gh
@@ -54,8 +55,19 @@ in
     enable = true;
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
+    defaultKeymap = "viins";           # vi editing: Esc for normal mode, i to insert
     initContent = ''
       bindkey '^f' autosuggest-accept
+
+      # vi-mode quality of life
+      KEYTIMEOUT=1                              # near-instant Esc into normal mode
+      bindkey -v '^?' backward-delete-char      # backspace works past the insert point
+
+      # word jumping: ctrl+arrows (CSI 1;5) and alt+arrows (CSI 1;3)
+      bindkey '^[[1;5C' forward-word
+      bindkey '^[[1;5D' backward-word
+      bindkey '^[[1;3C' forward-word
+      bindkey '^[[1;3D' backward-word
 
       export GPG_TTY=$(tty)
 
@@ -82,6 +94,7 @@ in
       character = {
         success_symbol = "[❯](purple)";
         error_symbol = "[❯](red)";
+        vimcmd_symbol = "[❮](green)";
       };
       cmd_duration.format = "[$duration]($style) ";
     };
