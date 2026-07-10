@@ -22,7 +22,6 @@ in
     gh
     just
     gnupg
-    pi-coding-agent
     # languages
     go
     nodejs
