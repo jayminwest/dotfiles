@@ -56,6 +56,8 @@
       "terminal-notifier"
       # Metal-optimized
       "whisper-cpp"
+      # kota-voice mic capture (provides `rec`)
+      "sox"
       # Swift toolchain
       "swiftlint"
       "swiftformat"
