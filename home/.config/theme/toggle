@@ -10,6 +10,11 @@
 # Usage: toggle [dark|light]   (no arg = flip current)
 set -euo pipefail
 
+# When launched from WezTerm's keybind (a GUI process), PATH is minimal and
+# won't include Homebrew/Nix, so `herdr` would not be found. Prepend the usual
+# tool locations so this works regardless of who invokes it.
+export PATH="/opt/homebrew/bin:/run/current-system/sw/bin:${HOME}/.nix-profile/bin:/usr/local/bin:${PATH}"
+
 MODE_FILE="${HOME}/.config/theme-mode"
 DOTFILES="${HOME}/.dotfiles"
 YAZI_DIR="${HOME}/.config/yazi"
