@@ -21,6 +21,9 @@ in
     yazi
     lazygit
     neovim
+    rust-analyzer
+    typescript-language-server
+    marksman
     gh
     just
     gnupg

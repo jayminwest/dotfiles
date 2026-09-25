@@ -33,7 +33,7 @@ config.window_background_opacity = theme.opacity
 config.font = wezterm.font("BlexMono Nerd Font")
 config.font_size = 13.0
 config.macos_window_background_blur = 50
-config.hide_tab_bar_if_only_one_tab = true
+config.hide_tab_bar_if_only_one_tab = false
 config.window_decorations = "RESIZE"
 
 -- Reload when the mode file changes (flipped by the `theme` toggle script), so
