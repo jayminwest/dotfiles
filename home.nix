@@ -79,9 +79,19 @@ in
 
       # machine-local secrets and overrides - never committed to this repo
       [ -f "$HOME/.zshrc.local" ] && source "$HOME/.zshrc.local"
+
+      # terminal theme (dark=Kanagawa / light=Everforest). Ensure the shared
+      # mode file + yazi theme symlink exist and agree (self-heals after a
+      # home-manager rebuild that removes ~/.config/yazi).
+      [ -f "$HOME/.config/theme-mode" ] || printf 'dark\n' > "$HOME/.config/theme-mode"
+      _tm="$(tr -d '[:space:]' < "$HOME/.config/theme-mode" 2>/dev/null || echo dark)"
+      mkdir -p "$HOME/.config/yazi"
+      ln -sfn "$HOME/.dotfiles/home/.config/yazi/theme-''${_tm}.toml" "$HOME/.config/yazi/theme.toml" 2>/dev/null || true
+      unset _tm
     '';
     shellAliases = {
       ".." = "cd ..";
+      theme = "$HOME/.dotfiles/home/.config/theme/toggle";
     };
   };
 
@@ -105,4 +115,7 @@ in
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/wezterm";
   home.file.".config/nvim".source =
     config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
+  # NB: ~/.config/yazi is intentionally NOT managed here. The `theme` toggle
+  # owns ~/.config/yazi/theme.toml as a symlink into this repo's dark/light
+  # templates, which home-manager (read-only store) could not repoint.
 }

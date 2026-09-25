@@ -1,0 +1,121 @@
+# Kanagawa (wave) — hand-written, self-contained (no external flavor).
+# Palette:
+#   sumiInk1 #1f1f28  sumiInk3 #363646  sumiInk4 #54546d  fujiWhite #dcd7ba
+#   oldWhite #c8c093  fujiGray #727169  waveBlue2 #2d4f67
+#   autumnRed #c34043 waveRed #e46876   springGreen #98bb6c  carpYellow #e6c384
+#   crystalBlue #7e9cd8 springBlue #7fb4ca  oniViolet #957fb8  waveAqua2 #7aa89f
+#   surimiOrange #ffa066  sakuraPink #d27e99
+
+[mgr]
+cwd = { fg = "#7aa89f" }
+
+hovered         = { reversed = true }
+preview_hovered = { underline = true }
+
+find_keyword  = { fg = "#e6c384", bold = true, italic = true, underline = true }
+find_position = { fg = "#d27e99", bg = "reset", bold = true, italic = true }
+
+marker_copied   = { fg = "#98bb6c", bg = "#98bb6c" }
+marker_cut      = { fg = "#c34043", bg = "#c34043" }
+marker_marked   = { fg = "#7aa89f", bg = "#7aa89f" }
+marker_selected = { fg = "#e6c384", bg = "#e6c384" }
+
+count_copied   = { fg = "#1f1f28", bg = "#98bb6c" }
+count_cut      = { fg = "#1f1f28", bg = "#c34043" }
+count_selected = { fg = "#1f1f28", bg = "#e6c384" }
+
+border_symbol = "│"
+border_style  = { fg = "#54546d" }
+
+[tabs]
+active   = { fg = "#1f1f28", bg = "#7aa89f", bold = true }
+inactive = { fg = "#dcd7ba", bg = "#363646" }
+
+[mode]
+normal_main = { fg = "#1f1f28", bg = "#7aa89f", bold = true }
+normal_alt  = { fg = "#7aa89f", bg = "#2d4f67" }
+
+select_main = { fg = "#1f1f28", bg = "#e6c384", bold = true }
+select_alt  = { fg = "#e6c384", bg = "#2d4f67" }
+
+unset_main  = { fg = "#1f1f28", bg = "#d27e99", bold = true }
+unset_alt   = { fg = "#d27e99", bg = "#2d4f67" }
+
+[status]
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+
+progress_label  = { fg = "#dcd7ba", bold = true }
+progress_normal = { fg = "#7aa89f", bg = "#2d4f67" }
+progress_error  = { fg = "#c34043", bg = "#2d4f67" }
+
+perm_type  = { fg = "#7aa89f" }
+perm_read  = { fg = "#e6c384" }
+perm_write = { fg = "#c34043" }
+perm_exec  = { fg = "#98bb6c" }
+perm_sep   = { fg = "#54546d" }
+
+[which]
+cols       = 3
+mask       = { bg = "#363646" }
+cand       = { fg = "#7aa89f" }
+rest       = { fg = "#c8c093" }
+desc       = { fg = "#d27e99" }
+separator  = "  "
+separator_style = { fg = "#54546d" }
+
+[confirm]
+border  = { fg = "#7aa89f" }
+title   = { fg = "#7aa89f" }
+content = {}
+list    = {}
+btn_yes = { fg = "#1f1f28", bg = "#7aa89f", bold = true }
+btn_no  = { fg = "#dcd7ba" }
+
+[spot]
+border = { fg = "#7aa89f" }
+title  = { fg = "#7aa89f" }
+tbl_col = { fg = "#e6c384" }
+tbl_cell = { fg = "#1f1f28", bg = "#7aa89f" }
+
+[notify]
+title_info  = { fg = "#98bb6c" }
+title_warn  = { fg = "#e6c384" }
+title_error = { fg = "#c34043" }
+
+[pick]
+border   = { fg = "#7aa89f" }
+active   = { fg = "#d27e99", bold = true }
+inactive = {}
+
+[input]
+border   = { fg = "#7aa89f" }
+title    = {}
+value    = {}
+selected = { reversed = true }
+
+[cmp]
+border   = { fg = "#7aa89f" }
+active   = { reversed = true }
+inactive = {}
+
+[tasks]
+border  = { fg = "#7aa89f" }
+title   = {}
+hovered = { fg = "#d27e99", underline = true }
+
+[help]
+on      = { fg = "#d27e99" }
+run     = { fg = "#7aa89f" }
+hovered = { reversed = true, bold = true }
+footer  = { fg = "#363646", bg = "#dcd7ba" }
+
+[filetype]
+rules = [
+  { mime = "image/*",       fg = "#7aa89f" },
+  { mime = "{audio,video}/*", fg = "#e6c384" },
+  { mime = "application/{,g}zip",            fg = "#d27e99" },
+  { mime = "application/x-{tar,bzip*,7z-compressed,xz,rar}", fg = "#d27e99" },
+  { url = "*",   fg = "#dcd7ba" },
+  { url = "*/",  fg = "#7e9cd8" },
+]

@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+# Toggle the terminal theme between dark (Kanagawa) and light (Everforest).
+#
+# Single source of truth: ~/.config/theme-mode ("dark" | "light").
+#   - WezTerm watches this file and reloads (color_scheme + opacity).
+#   - nvim polls it and swaps colorscheme live.
+#   - yazi reads ~/.config/yazi/theme.toml, which we repoint here.
+#   - herdr gets its [theme] name rewritten + a live server reload-config.
+#
+# Usage: toggle [dark|light]   (no arg = flip current)
+set -euo pipefail
+
+MODE_FILE="${HOME}/.config/theme-mode"
+DOTFILES="${HOME}/.dotfiles"
+YAZI_DIR="${HOME}/.config/yazi"
+
+current="dark"
+[ -f "$MODE_FILE" ] && current="$(tr -d '[:space:]' < "$MODE_FILE")"
+
+case "${1:-}" in
+  dark | light) next="$1" ;;
+  "") [ "$current" = "dark" ] && next="light" || next="dark" ;;
+  *) echo "usage: toggle [dark|light]" >&2; exit 2 ;;
+esac
+
+printf '%s\n' "$next" > "$MODE_FILE"
+
+# Point yazi at the matching theme (picked up on its next launch).
+mkdir -p "$YAZI_DIR"
+ln -sfn "${DOTFILES}/home/.config/yazi/theme-${next}.toml" "${YAZI_DIR}/theme.toml"
+
+# herdr (agent multiplexer): no Everforest built-in, so light uses gruvbox-light
+# (closest match) and dark uses the native kanagawa theme. Set the [theme] name
+# in its config.toml (preserving any other settings) and hot-reload the server.
+if command -v herdr >/dev/null 2>&1; then
+  herdr_cfg="${HOME}/.config/herdr/config.toml"
+  [ "$next" = "light" ] && herdr_theme="gruvbox-light" || herdr_theme="kanagawa"
+  mkdir -p "$(dirname "$herdr_cfg")"
+  [ -f "$herdr_cfg" ] || : > "$herdr_cfg"
+  tmp="$(mktemp)"
+  awk -v theme="$herdr_theme" '
+    BEGIN { in_theme = 0; set = 0 }
+    /^\[theme\]/ { print; in_theme = 1; next }
+    in_theme && /^\[/ {
+      if (!set) { print "name = \"" theme "\""; set = 1 }
+      in_theme = 0; print; next
+    }
+    in_theme && /^[ \t]*#?[ \t]*name[ \t]*=/ {
+      if (!set) { print "name = \"" theme "\""; set = 1 }
+      next
+    }
+    { print }
+    END {
+      if (in_theme && !set) { print "name = \"" theme "\""; set = 1 }
+      if (!set) { print "[theme]"; print "name = \"" theme "\"" }
+    }
+  ' "$herdr_cfg" > "$tmp" && mv "$tmp" "$herdr_cfg"
+  herdr server reload-config >/dev/null 2>&1 || true
+fi
+
+echo "$next"
