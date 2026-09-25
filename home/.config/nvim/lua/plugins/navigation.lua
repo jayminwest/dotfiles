@@ -19,7 +19,7 @@ return {
       { '<leader>s', function() Snacks.picker.grep() end,  desc = 'Search Text' },
       { '<leader>b', function() Snacks.picker.buffers() end, desc = 'Buffers' },
       { '<leader>w', function() Snacks.picker.grep_word() end, desc = 'Search Word/Selection', mode = { 'n', 'x' } },
-      { '<leader>r', function() Snacks.picker.resume() end, desc = 'Resume Last Search' },
+      { '<leader>r', function() Snacks.picker.resume({ exclude = { 'lsp_references', 'lsp_definitions' } }) end, desc = 'Resume Last Search' },
       { '<leader>o', function() Snacks.picker.recent() end, desc = 'Recent Files' },
       { '<leader>k', function() Snacks.picker.keymaps() end, desc = 'Search Keymaps' },
       { '<leader>h', function() Snacks.picker.help() end, desc = 'Search Help' },
