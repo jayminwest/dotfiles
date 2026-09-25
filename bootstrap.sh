@@ -27,7 +27,7 @@ echo "==> Step 3: first darwin-rebuild switch (pinned to nix-darwin-26.05)"
 # the absolute path to nix first and invoke that.
 NIX_BIN="$(command -v nix)"
 sudo "$NIX_BIN" run github:nix-darwin/nix-darwin/nix-darwin-26.05#darwin-rebuild -- \
-  switch --flake ~/.dotfiles#mac
+  switch --flake ~/.dotfiles#"$(whoami)"
 # If this fails with "nix: command not found", open a new terminal
 # (Determinate adds nix to new shells' PATH) and re-run ./bootstrap.sh.
 

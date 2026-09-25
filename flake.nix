@@ -14,10 +14,9 @@
 
   outputs = inputs@{ self, nix-darwin, nix-homebrew, home-manager, nixpkgs }:
     let
-      user = "jaymin";
-    in
-    {
-      darwinConfigurations."mac" = nix-darwin.lib.darwinSystem {
+      # One config per machine, keyed by macOS username (rebuild.sh picks
+      # `#$(whoami)`). Add a line here for a new machine.
+      mkMac = user: nix-darwin.lib.darwinSystem {
         specialArgs = { inherit user; };
         modules = [
           ./configuration.nix
@@ -33,6 +32,12 @@
             home-manager.users.${user} = import ./home.nix;
           }
         ];
+      };
+    in
+    {
+      darwinConfigurations = {
+        jayminwest = mkMac "jayminwest"; # personal mac
+        jaymin = mkMac "jaymin";         # work mac
       };
     };
 }

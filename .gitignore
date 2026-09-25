@@ -3,3 +3,6 @@
 # yazi's active theme is a runtime symlink managed by the `theme` toggle,
 # pointing at theme-dark.toml / theme-light.toml. Never commit it.
 home/.config/yazi/theme.toml
+
+# pi agent per-project task state
+.pi/
