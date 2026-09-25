@@ -15,6 +15,7 @@ return {
     },
     keys = {
       { '<leader>f', function() Snacks.picker.files() end, desc = 'Find Files' },
+      { '<leader>F', function() Snacks.picker.files({ hidden = true, ignored = true }) end, desc = 'Find All Files (incl. ignored)' },
       { '<leader>s', function() Snacks.picker.grep() end,  desc = 'Search Text' },
       { '<leader>b', function() Snacks.picker.buffers() end, desc = 'Buffers' },
       { '<leader>w', function() Snacks.picker.grep_word() end, desc = 'Search Word/Selection', mode = { 'n', 'x' } },
