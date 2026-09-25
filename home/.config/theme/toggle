@@ -59,7 +59,7 @@ if command -v herdr >/dev/null 2>&1; then
       if (in_theme && !set) { print "name = \"" theme "\""; set = 1 }
       if (!set) { print "[theme]"; print "name = \"" theme "\"" }
     }
-  ' "$herdr_cfg" > "$tmp" && mv "$tmp" "$herdr_cfg"
+  ' "$herdr_cfg" > "$tmp" && cat "$tmp" > "$herdr_cfg" && rm -f "$tmp"  # write through: cfg is a symlink into this repo
   herdr server reload-config >/dev/null 2>&1 || true
 fi
 

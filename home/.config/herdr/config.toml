@@ -1,0 +1,12 @@
+onboarding = false
+[theme]
+name = "kanagawa"
+
+[experimental]
+kitty_graphics = true
+
+[[keys.command]]
+key = "prefix+t"
+type = "plugin_action"
+command = "herdr-sidebar.open-sidebar"
+description = "toggle file sidebar"

@@ -2,6 +2,8 @@
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
+  # Edit-in-place symlink into this repo (no rebuild needed after edits).
+  link = path: config.lib.file.mkOutOfStoreSymlink "${dotfiles}/${path}";
 in
 
 {
@@ -25,6 +27,7 @@ in
     # languages
     go
     nodejs
+    rustlings
     # infra
     flyctl
     kubectl
@@ -47,11 +50,16 @@ in
     "$HOME/.cargo/bin"
     "$HOME/.bun/bin"
     "$HOME/go/bin"
+    "$HOME/.deno/bin"
+    "$HOME/.brv-cli/bin"
     "/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
   ];
 
   programs.zsh = {
     enable = true;
+    profileExtra = ''
+      eval "$(/opt/homebrew/bin/brew shellenv zsh)"
+    '';
     autosuggestion.enable = true;      # ghost text from history
     syntaxHighlighting.enable = true;  # commands turn green when valid
     defaultKeymap = "viins";           # vi editing: Esc for normal mode, i to insert
@@ -109,12 +117,39 @@ in
     };
   };
 
+  # Identity is machine-local (~/.config/git/local: [user] name/email/signingkey)
+  # so no identity lands in this public repo.
+  programs.git = {
+    enable = true;
+    ignores = [ "**/.claude/settings.local.json" "**/.claude/.cc-writes/" ];
+    signing = {
+      format = "ssh";
+      signByDefault = true;
+    };
+    settings = {
+      gpg.ssh.allowedSignersFile = "~/.ssh/allowed_signers";
+      credential."https://github.com".helper = "!gh auth git-credential";
+      credential."https://gist.github.com".helper = "!gh auth git-credential";
+    };
+    includes = [ { path = "~/.config/git/local"; } ];
+  };
+
   # Edit-in-place: the real files live in this repo, ~/.config just points at
   # them. Editing home/.config/* takes effect immediately - no rebuild needed.
-  home.file.".config/wezterm".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/wezterm";
-  home.file.".config/nvim".source =
-    config.lib.file.mkOutOfStoreSymlink "${dotfiles}/home/.config/nvim";
+  home.file.".config/wezterm".source = link "home/.config/wezterm";
+  home.file.".config/nvim".source = link "home/.config/nvim";
+  # File, not dir: ~/.config/herdr also holds sockets, logs, session + plugin state.
+  home.file.".config/herdr/config.toml".source = link "home/.config/herdr/config.toml";
+
+  # Agents: one AGENTS.md for all. Per-file links only - these dirs also hold
+  # auth, history, and sqlite state that must never be committed.
+  home.file.".claude/CLAUDE.md".source = link "agents/AGENTS.md";
+  home.file.".codex/AGENTS.md".source = link "agents/AGENTS.md";
+  home.file.".pi/agent/AGENTS.md".source = link "agents/AGENTS.md";
+  home.file.".claude/statusline-command.sh".source = link "home/.claude/statusline-command.sh";
+  home.file.".claude/statusline-wrapper.sh".source = link "home/.claude/statusline-wrapper.sh";
+  home.file.".pi/agent/agents".source = link "home/.pi/agent/agents";
+  home.file.".pi/agent/models.json".source = link "home/.pi/agent/models.json";
   # NB: ~/.config/yazi is intentionally NOT managed here. The `theme` toggle
   # owns ~/.config/yazi/theme.toml as a symlink into this repo's dark/light
   # templates, which home-manager (read-only store) could not repoint.
