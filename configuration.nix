@@ -1,4 +1,4 @@
-{ user, ... }:
+{ config, user, ... }:
 
 {
   # Determinate Nix manages the Nix daemon itself, so nix-darwin shouldn't.
@@ -22,7 +22,26 @@
       AppleShowAllExtensions = true;
     };
     trackpad.Clicking = true; # tap to click
+    dock = {
+      autohide = true;
+      orientation = "right";
+      tilesize = 39;
+      show-recents = false;
+      mru-spaces = false;       # don't reorder Spaces by recent use
+    };
+    finder = {
+      ShowPathbar = true;
+      ShowStatusBar = true;
+      AppleShowAllFiles = true;  # show hidden files
+      FXPreferredViewStyle = "Nlsv"; # list view
+      FXDefaultSearchScope = "SCcf"; # search current folder
+      _FXShowPosixPathInTitle = true;
+    };
+    screencapture.location = "/Users/${user}/Pictures/Screenshots";
   };
+
+  # Generated Brewfile at a stable path, for `brew-drift`.
+  environment.etc."Brewfile".text = config.homebrew.brewfile;
 
   nix-homebrew = {
     enable = true;
@@ -34,9 +53,11 @@
 
   homebrew = {
     enable = true;
-    # "zap": every switch removes any brew package/cask NOT listed below.
-    # This is the whole point - the lists here are the source of truth.
-    onActivation.cleanup = "zap";
+    # "none": switches never remove anything, so ad-hoc `brew install`s survive.
+    # The lists below are what a fresh machine gets; `brew-drift` (run after
+    # every ./rebuild.sh) shows installed packages missing from them.
+    # Never "zap": it also deletes app data (it wiped the Brave profile once).
+    onActivation.cleanup = "none";
     onActivation.autoUpdate = true;
     onActivation.extraFlags = [ "--force" ];
     # Things that belong in brew rather than Nix: launchd services,
@@ -65,15 +86,17 @@
       "periphery"
       # misc
       "herdr"
-      "rust"
       "watch"
     ];
     casks = [
       "wezterm"
       "hammerspoon"
+      "raycast"
+      "tailscale-app"
       "cmux"
       "mark-text"
       "zettlr"
+      "brave-browser"
     ];
   };
 }

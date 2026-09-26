@@ -1,4 +1,4 @@
-{ config, pkgs, user, ... }:
+{ config, lib, pkgs, user, ... }:
 
 let
   dotfiles = "${config.home.homeDirectory}/.dotfiles";
@@ -21,21 +21,36 @@ in
     yazi
     lazygit
     neovim
-    rust-analyzer
+    (lib.hiPrio rust-analyzer)  # wins over rustup's rust-analyzer proxy
     typescript-language-server
     marksman
     gh
     just
     gnupg
+    eza
+    bat
+    tree
+    wget
+    btop
     # languages
     go
+    gopls
+    golangci-lint
+    gofumpt
     nodejs
+    rustup  # toolchains live in ~/.rustup (default pinned there)
     rustlings
+    uv
+    ruff
+    # data
+    postgresql  # psql, pg_dump, pg_restore
     # infra
     flyctl
     kubectl
     kubernetes-helm
     k3d
+    (google-cloud-sdk.withExtraComponents [ google-cloud-sdk.components.gke-gcloud-auth-plugin ])
+    _1password-cli  # `op`
     # media
     ffmpeg
     # font
@@ -103,8 +118,22 @@ in
     shellAliases = {
       ".." = "cd ..";
       theme = "$HOME/.dotfiles/home/.config/theme/toggle";
+      ls = "eza";
+      ll = "eza -la --git";
+      tree = "eza --tree";
+      # Installed brew packages/casks/taps missing from configuration.nix.
+      brew-drift = "$HOME/.dotfiles/brew-drift.sh";
     };
   };
+
+  programs.zoxide.enable = true; # `z <dir>` jumps by frecency
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
+  # Target dir for system.defaults.screencapture.location.
+  home.file."Pictures/Screenshots/.keep".text = "";
 
   programs.starship = {
     enable = true;
