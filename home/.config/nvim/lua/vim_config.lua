@@ -4,6 +4,7 @@ o.expandtab = true             -- spaces, not tabs
 o.shiftwidth = 2               -- 2 spaces per indent level
 o.number = true                -- absolute number on the cursor line
 o.relativenumber = true        -- relative line numbers for fast jumps
+o.signcolumn = 'yes'           -- always show sign column so diagnostics don't shift text
 o.ignorecase = true            -- search is case-insensitive by default
 o.smartcase = true             -- case-sensitive only when typing a capital
 o.clipboard = 'unnamedplus'    -- share the system clipboard
