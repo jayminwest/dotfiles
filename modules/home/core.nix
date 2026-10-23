@@ -168,9 +168,11 @@ in
 
   # Agents: one AGENTS.md for all. Per-file links only - these dirs also hold
   # auth, history, and sqlite state that must never be committed.
-  home.file.".claude/CLAUDE.md".source = link "agents/AGENTS.md";
-  home.file.".codex/AGENTS.md".source = link "agents/AGENTS.md";
-  home.file.".pi/agent/AGENTS.md".source = link "agents/AGENTS.md";
+  # force: hosts (e.g. cloud VMs) may preinstall these as symlinks, which
+  # home-manager never backs up; this repo owns them, so replace the link.
+  home.file.".claude/CLAUDE.md" = { source = link "agents/AGENTS.md"; force = true; };
+  home.file.".codex/AGENTS.md" = { source = link "agents/AGENTS.md"; force = true; };
+  home.file.".pi/agent/AGENTS.md" = { source = link "agents/AGENTS.md"; force = true; };
   home.file.".claude/statusline-command.sh".source = link "home/.claude/statusline-command.sh";
   home.file.".claude/statusline-wrapper.sh".source = link "home/.claude/statusline-wrapper.sh";
   home.file.".pi/agent/agents".source = link "home/.pi/agent/agents";
