@@ -27,6 +27,8 @@ case "$(uname -s)" in
     ;;
   Linux)
     out="$("$nix" build --no-link --print-out-paths "$DIR#homeConfigurations.default.activationPackage" "${args[@]}")"
-    "$out/activate"
+    # A real file where home-manager wants a link is moved aside, not fatal
+    # (same as home-manager.backupFileExtension on macOS).
+    HOME_MANAGER_BACKUP_EXT=hm-backup "$out/activate"
     ;;
 esac
