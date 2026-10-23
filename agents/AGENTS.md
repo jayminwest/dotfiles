@@ -1,6 +1,6 @@
 # Global agent instructions
 
-Symlinked into every agent's global instructions path by ~/.dotfiles/home.nix
+Symlinked into every agent's global instructions path by ~/.dotfiles/modules/home/core.nix
 (Claude Code, Codex, pi). Keep it portable: machine- or employer-specific
 instructions go in local, untracked files (e.g. ~/.claude/rules/*.md).
 
