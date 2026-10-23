@@ -3,6 +3,9 @@
 # Usage: ./rebuild.sh   (role/user/host come from ~/.config/dotfiles/machine.nix,
 #                        written by ./bootstrap.sh)
 set -euo pipefail
+# Never as root: ~ would be /root and the config would land on the wrong user.
+# The scripts call sudo themselves where needed.
+[ "$(id -u)" != 0 ] || { echo "$(basename "$0"): run as your user, not root/sudo" >&2; exit 1; }
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd -P)"
 
 machine="$HOME/.config/dotfiles"
