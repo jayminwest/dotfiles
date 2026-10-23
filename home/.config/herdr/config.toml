@@ -1,0 +1,28 @@
+onboarding = false
+[theme]
+name = "kanagawa"
+
+[experimental]
+kitty_graphics = true
+
+[keys]
+# prefix+w picker: j/k walks workspaces across machines (was up/down);
+# picker pane focus up/down moves to the arrows to free j/k.
+navigate_workspace_down = "j"
+navigate_workspace_up = "k"
+navigate_pane_down = "down"
+navigate_pane_up = "up"
+# prefix+ctrl+h/j/k/l swaps the focused pane with its neighbour.
+swap_pane_left = "prefix+ctrl+h"
+swap_pane_down = "prefix+ctrl+j"
+swap_pane_up = "prefix+ctrl+k"
+swap_pane_right = "prefix+ctrl+l"
+
+[[keys.command]]
+key = "prefix+t"
+type = "plugin_action"
+command = "yazi-sidebar.toggle"
+description = "toggle yazi file sidebar"
+
+[ui.toast]
+delivery = "herdr"

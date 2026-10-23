@@ -1,0 +1,10 @@
+# Sidebar-only keys, layered over yazi's defaults.
+
+[mgr]
+prepend_keymap = [
+  { on = "<Enter>", run = "plugin smart-enter", desc = "Enter dir / open file in split" },
+  { on = "l", run = "plugin smart-enter", desc = "Enter dir / open file in split" },
+  { on = ["<Space>", "f"], run = 'shell -- "$HERDR_PLUGIN_ROOT/bin/find"', desc = "Find files" },
+  { on = ["<Space>", "F"], run = 'shell -- "$HERDR_PLUGIN_ROOT/bin/find" all', desc = "Find all files (incl. hidden/ignored)" },
+  { on = "T", run = 'shell -- "$HERDR_PLUGIN_ROOT/bin/open-split" --shell %h', desc = "Shell split here" },
+]

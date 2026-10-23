@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+# Plugin action: close this tab's sidebar if it has one; otherwise dock a new
+# one on the tab's left edge, rooted in the focused pane's cwd, and focus it.
+set -euo pipefail
+source "$(dirname "$0")/lib.sh"
+
+ctx=${HERDR_PLUGIN_CONTEXT_JSON:?run as a herdr plugin action}
+tab=$(jq -r .tab_id <<<"$ctx")
+focused=$(jq -r .focused_pane_id <<<"$ctx")
+cwd=$(jq -r '.focused_pane_cwd // .workspace_cwd // empty' <<<"$ctx")
+
+open=$(herdr pane list | jq -r --arg t "$tab" --arg l "$SIDEBAR_LABEL" \
+  '.result.panes[] | select(.tab_id == $t and .label == $l) | .pane_id')
+if [[ -n $open ]]; then
+  for p in $open; do herdr pane close "$p" >/dev/null; done
+  exit 0
+fi
+
+# herdr only splits right/down, so split the top-left pane and swap the new
+# pane into its slot.
+left=$(herdr pane layout --pane "$focused" | jq -c '.result.layout.panes | min_by([.rect.x, .rect.y])')
+left_id=$(jq -r .pane_id <<<"$left")
+args=(--plugin yazi-sidebar --entrypoint sidebar --placement split
+  --target-pane "$left_id" --direction right --no-focus)
+[[ -n $cwd ]] && args+=(--cwd "$cwd")
+side=$(herdr plugin pane open "${args[@]}" | jq -r .result.plugin_pane.pane.pane_id)
+herdr pane swap --source-pane "$side" --target-pane "$left_id" >/dev/null
+size_first_child "$side" "$(jq -c .rect <<<"$left")"
+api pane.focus "{\"pane_id\":\"$side\"}" >/dev/null

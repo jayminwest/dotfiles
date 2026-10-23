@@ -1,0 +1,10 @@
+# Standalone yazi. theme.toml beside it is a symlink owned by the `theme`
+# toggle; the herdr sidebar has its own config (herdr/yazi-sidebar/yazi).
+
+# Videos play in the terminal itself (half-block truecolor, no audio), so they
+# work over SSH and inside herdr. q quits back to yazi, space pauses.
+[opener]
+termplay = [{ run = 'mpv --vo=tct --no-audio --really-quiet %s', block = true, desc = "Play in terminal" }]
+
+[open]
+prepend_rules = [{ mime = "video/*", use = ["termplay", "open", "reveal"] }]

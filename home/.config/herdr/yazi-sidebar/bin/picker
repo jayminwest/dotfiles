@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+# Popup entrypoint: fd | fzf, then open the pick in a split. Mirrors the nvim
+# Snacks pickers: Space f = tracked files, Space F = + hidden and ignored.
+cmd=(fd --type f)
+[[ -n ${HERDR_YAZI_FIND_ALL-} ]] && cmd+=(--hidden --no-ignore --exclude .git)
+pick=$("${cmd[@]}" | fzf --preview 'bat --color=always --style=numbers --line-range=:300 {}') || exit 0
+exec "$(dirname "$0")/open-split" "$PWD/$pick"

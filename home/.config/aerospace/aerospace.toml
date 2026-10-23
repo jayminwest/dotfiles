@@ -1,0 +1,135 @@
+# AeroSpace, set up to feel like herdr. Trial: what sticks becomes Flick's tile module.
+# Hyper = Caps Lock (Flick [keys] hyper = cmd+ctrl+alt+shift).
+#
+#   Hyper+h/j/k/l      focus pane                (herdr navigate_pane)
+#   Hyper+1..4         workspace N: 1-2 on the laptop, 3-4 on the external display
+#   Hyper+n / p        next / previous workspace
+#   Hyper+Tab          last workspace
+#   Hyper+arrows       move window to the display that way
+#   Hyper+;            prefix: one key, then back to normal (Esc cancels; Caps Lock may stay held)
+#     h/j/k/l            swap window that way      (herdr prefix+ctrl+hjkl)
+#     shift+h/j/k/l      join with neighbour (nest a split)
+#     1..4               send window to workspace N
+#     s / t              stack (tabs) / tiles, again flips orientation
+#     z                  fullscreen (zoom)
+#     f                  float / tile
+#     x                  close window
+#     =                  balance sizes
+#     backspace          reset the layout of this workspace
+#     r                  resize mode: h/l width, j/k height, Esc/Enter done
+
+config-version = 2
+start-at-login = false
+auto-reload-config = true
+# Kanagawa orange (surimiOrange) border on the focused window (JankyBorders, brew felixkratz/formulae/borders).
+after-startup-command = ['exec-and-forget /opt/homebrew/bin/borders active_color=0xffffa066 inactive_color=0x00000000 width=5.0']
+
+enable-normalization-flatten-containers = true
+enable-normalization-opposite-orientation-for-nested-containers = true
+default-root-container-layout = 'tiles'
+default-root-container-orientation = 'auto'
+accordion-padding = 30
+
+persistent-workspaces = ['1', '2', '3', '4']
+on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
+automatically-unhide-macos-hidden-apps = false
+
+key-mapping.preset = 'qwerty'
+
+gaps.inner.horizontal = 0
+gaps.inner.vertical = 0
+gaps.outer.left = 0
+gaps.outer.bottom = 0
+gaps.outer.top = 0
+gaps.outer.right = 0
+
+# Flick's launcher, HUD and chat panels float over the tiles.
+[[on-window-detected]]
+if.app-id = 'com.jayminwest.flick'
+run = 'layout floating'
+
+[[on-window-detected]]
+if.app-id = 'com.apple.systempreferences'
+run = 'layout floating'
+
+# Each workspace stays on its screen. With no external display, 3-4 fall back to the laptop.
+[workspace-to-monitor-force-assignment]
+1 = 'built-in'
+2 = 'built-in'
+3 = 'secondary'
+4 = 'secondary'
+
+[mode.main.binding]
+cmd-alt-ctrl-shift-h = 'focus left'
+cmd-alt-ctrl-shift-j = 'focus down'
+cmd-alt-ctrl-shift-k = 'focus up'
+cmd-alt-ctrl-shift-l = 'focus right'
+
+cmd-alt-ctrl-shift-1 = 'workspace 1'
+cmd-alt-ctrl-shift-2 = 'workspace 2'
+cmd-alt-ctrl-shift-3 = 'workspace 3'
+cmd-alt-ctrl-shift-4 = 'workspace 4'
+cmd-alt-ctrl-shift-n = 'workspace --wrap-around next'
+cmd-alt-ctrl-shift-p = 'workspace --wrap-around prev'
+cmd-alt-ctrl-shift-tab = 'workspace-back-and-forth'
+
+cmd-alt-ctrl-shift-left = 'move-node-to-monitor --focus-follows-window left'
+cmd-alt-ctrl-shift-down = 'move-node-to-monitor --focus-follows-window down'
+cmd-alt-ctrl-shift-up = 'move-node-to-monitor --focus-follows-window up'
+cmd-alt-ctrl-shift-right = 'move-node-to-monitor --focus-follows-window right'
+
+cmd-alt-ctrl-shift-semicolon = 'mode prefix'
+
+[mode.prefix.binding]
+esc = 'mode main'
+h = ['move left', 'mode main']
+j = ['move down', 'mode main']
+k = ['move up', 'mode main']
+l = ['move right', 'mode main']
+ctrl-h = ['move left', 'mode main']
+ctrl-j = ['move down', 'mode main']
+ctrl-k = ['move up', 'mode main']
+ctrl-l = ['move right', 'mode main']
+shift-h = ['join-with left', 'mode main']
+shift-j = ['join-with down', 'mode main']
+shift-k = ['join-with up', 'mode main']
+shift-l = ['join-with right', 'mode main']
+1 = ['move-node-to-workspace 1', 'mode main']
+2 = ['move-node-to-workspace 2', 'mode main']
+3 = ['move-node-to-workspace 3', 'mode main']
+4 = ['move-node-to-workspace 4', 'mode main']
+s = ['layout accordion horizontal vertical', 'mode main']
+t = ['layout tiles horizontal vertical', 'mode main']
+z = ['fullscreen', 'mode main']
+f = ['layout floating tiling', 'mode main']
+x = ['close', 'mode main']
+equal = ['balance-sizes', 'mode main']
+backspace = ['flatten-workspace-tree', 'mode main']
+r = 'mode resize'
+
+
+# The same keys with Caps Lock still held (Hyper already holds shift, so shift+hjkl join
+# needs Caps Lock released).
+cmd-alt-ctrl-shift-h = ['move left', 'mode main']
+cmd-alt-ctrl-shift-j = ['move down', 'mode main']
+cmd-alt-ctrl-shift-k = ['move up', 'mode main']
+cmd-alt-ctrl-shift-l = ['move right', 'mode main']
+cmd-alt-ctrl-shift-1 = ['move-node-to-workspace 1', 'mode main']
+cmd-alt-ctrl-shift-2 = ['move-node-to-workspace 2', 'mode main']
+cmd-alt-ctrl-shift-3 = ['move-node-to-workspace 3', 'mode main']
+cmd-alt-ctrl-shift-4 = ['move-node-to-workspace 4', 'mode main']
+cmd-alt-ctrl-shift-s = ['layout accordion horizontal vertical', 'mode main']
+cmd-alt-ctrl-shift-t = ['layout tiles horizontal vertical', 'mode main']
+cmd-alt-ctrl-shift-z = ['fullscreen', 'mode main']
+cmd-alt-ctrl-shift-f = ['layout floating tiling', 'mode main']
+cmd-alt-ctrl-shift-x = ['close', 'mode main']
+cmd-alt-ctrl-shift-equal = ['balance-sizes', 'mode main']
+cmd-alt-ctrl-shift-backspace = ['flatten-workspace-tree', 'mode main']
+cmd-alt-ctrl-shift-r = 'mode resize'
+[mode.resize.binding]
+h = 'resize width -50'
+l = 'resize width +50'
+j = 'resize height +50'
+k = 'resize height -50'
+esc = 'mode main'
+enter = 'mode main'

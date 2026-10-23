@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Called from yazi (Space f / Space F): open the file picker in a popup,
+# rooted at the repo (or yazi's cwd outside one).
+source "$(dirname "$0")/lib.sh"
+root=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+herdr plugin pane open --plugin yazi-sidebar --entrypoint picker --placement popup \
+  --width 80% --height 80% --cwd "$root" --focus \
+  --env "HERDR_YAZI_SIDEBAR=$HERDR_PANE_ID" --env "HERDR_YAZI_FIND_ALL=${1:+1}" >/dev/null

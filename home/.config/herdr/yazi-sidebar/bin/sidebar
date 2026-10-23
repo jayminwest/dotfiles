@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Pane entrypoint: yazi with the sidebar config. Registers its client id per
+# tab so shell/follow.zsh can push `cd`s to it.
+source "$(dirname "$0")/lib.sh"
+root=$(cd "$(dirname "$0")/.." && pwd)
+
+# Sidebar config dir: our yazi.toml/keymap.toml/plugins plus your regular
+# theme (the `theme` toggle repoints ~/.config/yazi/theme.toml).
+conf=$STATE_DIR/yazi
+mkdir -p "$conf"
+for f in yazi.toml keymap.toml plugins; do ln -sfn "$root/yazi/$f" "$conf/$f"; done
+[[ -e $HOME/.config/yazi/theme.toml ]] && ln -sfn "$HOME/.config/yazi/theme.toml" "$conf/theme.toml"
+
+id=$(printf %s "$HERDR_PANE_ID" | cksum | cut -d' ' -f1)
+reg=$STATE_DIR/${HERDR_TAB_ID//:/_}
+echo "$id" >"$reg"
+cleanup() { [[ $(cat "$reg" 2>/dev/null) == "$id" ]] && rm -f "$reg"; }
+trap cleanup EXIT
+trap exit HUP TERM INT
+
+YAZI_CONFIG_HOME=$conf yazi --client-id "$id"

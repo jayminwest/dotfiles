@@ -1,0 +1,36 @@
+# yazi-sidebar: a yazi file browser docked on the left of a herdr tab.
+# Linked (not installed) from this repo by home.nix, so edits apply live.
+#
+#   prefix+t      toggle: close it if this tab has one, else dock + focus it
+#   Enter / o     open the hovered file in nvim, in a split beside the sidebar
+#   T             open a shell split in the hovered directory
+#   Space f / F   fuzzy-find files (F includes hidden + ignored) in a popup
+#   q             quit (closes the pane)
+#
+# The sidebar follows `cd` in any shell of its tab via shell/follow.zsh.
+
+id = "yazi-sidebar"
+name = "yazi-sidebar"
+version = "0.1.0"
+description = "Yazi file sidebar: one-key toggle, instant cwd follow, open files in a split."
+min_herdr_version = "0.9.0"
+platforms = ["linux", "macos"]
+
+# The title doubles as the pane label bin/toggle looks for.
+[[panes]]
+id = "sidebar"
+title = "yazi-sidebar"
+placement = "split"
+command = ["./bin/sidebar"]
+
+[[panes]]
+id = "picker"
+title = "Find files"
+placement = "popup"
+command = ["./bin/picker"]
+
+[[actions]]
+id = "toggle"
+title = "Toggle yazi sidebar"
+description = "Dock the yazi sidebar on the left of this tab, or close it if open."
+command = ["./bin/toggle"]

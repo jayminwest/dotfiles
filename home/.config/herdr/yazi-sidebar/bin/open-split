@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+# Open PATH in nvim in a new split beside the sidebar; with --shell, open a
+# plain shell in PATH (or its directory) instead; with --play, play the video
+# in the terminal (mpv half-block output, no audio). The split goes right of a
+# wide neighbor and below a narrow one.
+set -euo pipefail
+source "$(dirname "$0")/lib.sh"
+
+mode=edit
+case ${1-} in --shell) mode=shell; shift ;; --play) mode=play; shift ;; esac
+target=${1:?usage: open-split [--shell|--play] PATH}
+sidebar=${HERDR_YAZI_SIDEBAR:-$HERDR_PANE_ID}
+
+if [[ -d $target ]]; then dir=$target; else dir=$(dirname "$target"); fi
+cwd=$dir
+# nvim starts at the repo root so its pickers search the whole project.
+[[ $mode == edit ]] && cwd=$(git -C "$dir" rev-parse --show-toplevel 2>/dev/null || echo "$dir")
+
+layout=$(herdr pane layout --pane "$sidebar" | jq -c .result.layout)
+next=$(herdr pane neighbor --direction right --pane "$sidebar" | jq -r '.result.neighbor.neighbor_pane_id // empty')
+if [[ -n $next ]]; then
+  rect=$(jq -c --arg p "$next" '.panes[] | select(.pane_id == $p) | .rect' <<<"$layout")
+  dirn=$(jq -r 'if .width > 2 * .height then "right" else "down" end' <<<"$rect")
+  new=$(herdr pane split "$next" --direction "$dirn" --cwd "$cwd" --focus | jq -r .result.pane.pane_id)
+else
+  # Sidebar is alone in the tab: split it and shrink it back.
+  rect=$(jq -c --arg p "$sidebar" '.panes[] | select(.pane_id == $p) | .rect' <<<"$layout")
+  new=$(herdr pane split "$sidebar" --direction right --cwd "$cwd" --focus | jq -r .result.pane.pane_id)
+  size_first_child "$sidebar" "$rect"
+fi
+
+case $mode in
+  edit) herdr pane run "$new" "nvim $(printf %q "$target")" >/dev/null ;;
+  play) herdr pane run "$new" "mpv --vo=tct --no-audio --really-quiet $(printf %q "$target")" >/dev/null ;;
+esac
+exit 0

@@ -1,0 +1,122 @@
+#!/usr/bin/python3
+"""Flick extension for AeroSpace. Protocol: flick docs/extensions.md.
+
+keys: the key cheatsheet, read live from the header comment of aerospace.toml, so editing
+that comment updates the sheet. windows: every window by workspace; Enter focuses it."""
+
+import json
+import os
+import re
+import subprocess
+import sys
+
+CONFIG = os.path.expanduser("~/.config/aerospace/aerospace.toml")
+AEROSPACE = "/opt/homebrew/bin/aerospace"
+# "#   keys    description": 3 spaces is a top-level key, 5 is a key after the prefix.
+LINE = re.compile(r"^#( {3}| {5})(\S+(?: \S+)*?) {2,}(\S.*)$")
+CLOSE = [{"key": "close", "title": "Close", "do": "dismiss"}]
+
+
+def aerospace(*args):
+    return subprocess.run([AEROSPACE, *args], capture_output=True, text=True, check=True).stdout
+
+
+def bindings():
+    prefix, rows = None, []
+    with open(CONFIG, encoding="utf-8") as f:
+        for line in f:
+            if not line.startswith("#"):
+                break
+            m = LINE.match(line.rstrip("\n"))
+            if not m:
+                continue
+            indent, keys, desc = m.groups()
+            if indent == "   ":
+                rows.append((keys, desc))
+                if desc.startswith("prefix"):
+                    prefix = keys
+            else:
+                rows.append((f"{prefix or 'prefix'} then {keys}", desc))
+    return rows
+
+
+def key_items():
+    return [
+        {
+            "key": re.sub(r"[^A-Za-z0-9._-]+", "-", keys.replace(";", "semicolon").replace("=", "equal"))[:128],
+            "title": " ".join(desc.split()),
+            "accessory": keys,
+            "icon": "keyboard",
+            "keywords": keys.split()[:16],
+            "actions": CLOSE,
+        }
+        for keys, desc in bindings()
+    ]
+
+
+def window_items():
+    fmt = "%{window-id} %{workspace} %{app-name} %{window-title} %{monitor-name}"
+    windows = json.loads(aerospace("list-windows", "--all", "--json", "--format", fmt))
+    focused = aerospace("list-workspaces", "--focused").strip()
+    windows.sort(key=lambda w: (w["workspace"], w["app-name"].lower(), w["window-title"]))
+    return [
+        {
+            "key": str(w["window-id"]),
+            "title": w["app-name"] + (f" — {w['window-title']}" if w["window-title"] else ""),
+            "subtitle": f"Workspace {w['workspace']} · {w['monitor-name']}",
+            "accessory": w["workspace"] + (" ●" if w["workspace"] == focused else ""),
+            "icon": "macwindow",
+            "tone": "ok" if w["workspace"] == focused else "neutral",
+            "keywords": [w["workspace"], f"ws{w['workspace']}"],
+            "actions": [{"key": "focus", "title": "Focus"}],
+        }
+        for w in windows
+    ]
+
+
+ROOT = [
+    {
+        "key": "keys",
+        "title": "AeroSpace Keys",
+        "subtitle": "Window and workspace cheatsheet",
+        "icon": "keyboard",
+        "keywords": ["aerospace", "cheatsheet", "window", "workspace", "tiling"],
+        "actions": [{"key": "open", "title": "Show Keys", "do": {"push": "keys"}}],
+    },
+    {
+        "key": "windows",
+        "title": "AeroSpace Windows",
+        "subtitle": "Every window by workspace",
+        "icon": "macwindow.on.rectangle",
+        "keywords": ["aerospace", "workspace", "windows"],
+        "actions": [{"key": "open", "title": "Show Windows", "do": {"push": "windows"}}],
+    },
+]
+
+
+def reply(req):
+    op, view = req.get("op"), req.get("view")
+    if op == "root":
+        return {"items": ROOT}
+    if op == "open" and view == "keys":
+        return {"title": "AeroSpace Keys", "placeholder": "Search keys…", "items": key_items()}
+    if op == "open" and view == "windows":
+        return {"title": "AeroSpace Windows", "placeholder": "Search windows or workspace…",
+                "items": window_items()}
+    if op == "act" and view == "windows" and req.get("action") == "focus":
+        aerospace("focus", "--window-id", req["item"])
+    return {}
+
+
+def main():
+    try:
+        out = reply(json.loads(sys.stdin.read() or "{}"))
+    except OSError as e:
+        out = {"error": f"{e.filename or 'aerospace'}: {e.strerror}"}
+    except subprocess.CalledProcessError as e:
+        out = {"error": f"aerospace: {e.stderr.strip() or e.returncode}"}
+    json.dump(out, sys.stdout)
+
+
+if __name__ == "__main__":
+    main()
