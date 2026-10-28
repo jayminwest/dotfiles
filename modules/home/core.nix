@@ -175,6 +175,14 @@ in
   home.file.".pi/agent/AGENTS.md" = { source = link "agents/AGENTS.md"; force = true; };
   home.file.".claude/statusline-command.sh".source = link "home/.claude/statusline-command.sh";
   home.file.".claude/statusline-wrapper.sh".source = link "home/.claude/statusline-wrapper.sh";
+  # settings.json is app-written, so merge just the statusLine key instead of
+  # linking the file. Never fail the switch.
+  home.activation.claudeStatusline = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    f="$HOME/.claude/settings.json"
+    run mkdir -p "$HOME/.claude"
+    [ -s "$f" ] || run sh -c "echo '{}' > \"$f\""
+    run sh -c '${pkgs.jq}/bin/jq ".statusLine = {type: \"command\", command: \"bash ~/.claude/statusline-wrapper.sh\"}" "$1" > "$1.tmp" && mv "$1.tmp" "$1"' _ "$f" || rm -f "$f.tmp"
+  '';
   home.file.".pi/agent/agents".source = link "home/.pi/agent/agents";
   home.file.".pi/agent/models.json".source = link "home/.pi/agent/models.json";
   # Skills that live in their own repos. Per-skill links: ~/.claude/skills also
