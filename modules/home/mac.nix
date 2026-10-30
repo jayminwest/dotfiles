@@ -38,6 +38,8 @@ in
   '';
   # Installed brew packages/casks/taps missing from the Nix lists.
   programs.zsh.shellAliases.brew-drift = "$HOME/.dotfiles/brew-drift.sh";
+  # No sleep, lid closed too, while it runs (like caffeinate).
+  programs.zsh.shellAliases.sleep-off = "$HOME/.dotfiles/sleep-off.sh";
 
   programs.git.signing.signByDefault = true;
 
