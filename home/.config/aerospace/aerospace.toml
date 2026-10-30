@@ -2,14 +2,15 @@
 # Hyper = Caps Lock (Flick [keys] hyper = cmd+ctrl+alt+shift).
 #
 #   Hyper+h/j/k/l      focus pane                (herdr navigate_pane)
-#   Hyper+1..6         workspace N: 1-2 on the laptop, 3-4 on the external display, 5 Slack, 6 Spotify
+#   Hyper+1..7         workspace N: 1-2 on the laptop, 3-4 on the external display, 5 Slack, 6 Spotify,
+#                      7 blank on the external display
 #   Hyper+n / p        next / previous workspace
 #   Hyper+Tab          last workspace
 #   Hyper+arrows       move window to the display that way
 #   Hyper+;            prefix: one key, then back to normal (Esc cancels; Caps Lock may stay held)
 #     h/j/k/l            swap window that way      (herdr prefix+ctrl+hjkl)
 #     shift+h/j/k/l      join with neighbour (nest a split)
-#     1..6               send window to workspace N
+#     1..7               send window to workspace N
 #     s / t              stack (tabs) / tiles, again flips orientation
 #     z                  fullscreen (zoom)
 #     f                  float / tile
@@ -30,7 +31,7 @@ default-root-container-layout = 'tiles'
 default-root-container-orientation = 'auto'
 accordion-padding = 30
 
-persistent-workspaces = ['1', '2', '3', '4', '5', '6']
+persistent-workspaces = ['1', '2', '3', '4', '5', '6', '7']
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 automatically-unhide-macos-hidden-apps = false
 
@@ -68,6 +69,7 @@ run = 'move-node-to-workspace 6'
 2 = 'built-in'
 3 = 'secondary'
 4 = 'secondary'
+7 = 'secondary'
 
 [mode.main.binding]
 cmd-alt-ctrl-shift-h = 'focus left'
@@ -81,6 +83,7 @@ cmd-alt-ctrl-shift-3 = 'workspace 3'
 cmd-alt-ctrl-shift-4 = 'workspace 4'
 cmd-alt-ctrl-shift-5 = 'workspace 5'
 cmd-alt-ctrl-shift-6 = 'workspace 6'
+cmd-alt-ctrl-shift-7 = 'workspace 7'
 cmd-alt-ctrl-shift-n = 'workspace --wrap-around next'
 cmd-alt-ctrl-shift-p = 'workspace --wrap-around prev'
 cmd-alt-ctrl-shift-tab = 'workspace-back-and-forth'
@@ -112,6 +115,7 @@ shift-l = ['join-with right', 'mode main']
 4 = ['move-node-to-workspace 4', 'mode main']
 5 = ['move-node-to-workspace 5', 'mode main']
 6 = ['move-node-to-workspace 6', 'mode main']
+7 = ['move-node-to-workspace 7', 'mode main']
 s = ['layout accordion horizontal vertical', 'mode main']
 t = ['layout tiles horizontal vertical', 'mode main']
 z = ['fullscreen', 'mode main']
@@ -134,6 +138,7 @@ cmd-alt-ctrl-shift-3 = ['move-node-to-workspace 3', 'mode main']
 cmd-alt-ctrl-shift-4 = ['move-node-to-workspace 4', 'mode main']
 cmd-alt-ctrl-shift-5 = ['move-node-to-workspace 5', 'mode main']
 cmd-alt-ctrl-shift-6 = ['move-node-to-workspace 6', 'mode main']
+cmd-alt-ctrl-shift-7 = ['move-node-to-workspace 7', 'mode main']
 cmd-alt-ctrl-shift-s = ['layout accordion horizontal vertical', 'mode main']
 cmd-alt-ctrl-shift-t = ['layout tiles horizontal vertical', 'mode main']
 cmd-alt-ctrl-shift-z = ['fullscreen', 'mode main']
